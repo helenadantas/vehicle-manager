@@ -38,7 +38,7 @@ public class VehicleController {
     }
 
     @DeleteMapping("/vehicles/{id}")
-    @Operation(summary = "Delete Vehicle", description = "Delete an existent vehicle by id", tags = "Vehicle Endpoints")
+    @Operation(summary = "Delete Vehicle", description = "Delete an existent vehicle by id", tags = "Vehicles Endpoints")
     public ResponseEntity<Void> deleteVehicle(@PathVariable("id") Long vehicleId,
                                               JwtAuthenticationToken token) {
         UUID userId = UUID.fromString(token.getName());
@@ -47,7 +47,7 @@ public class VehicleController {
     }
 
     @PutMapping("/vehicles/{vehicleId}")
-    @Operation(summary = "Edit Vehicle", description = "Edit an existent vehicle", tags = "Vehicle Endpoints")
+    @Operation(summary = "Edit Vehicle", description = "Edit an existent vehicle", tags = "Vehicles Endpoints")
     public ResponseEntity<Void> updateVehicle(@PathVariable("vehicleId") Long vehicleId,
                                               @RequestBody UpdateVehicleDto dto,
                                               JwtAuthenticationToken token) {

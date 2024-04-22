@@ -1,6 +1,7 @@
 package com.vehiclemanager.vehiclemanager.services;
 
 import com.vehiclemanager.vehiclemanager.dto.CreateUserDto;
+import com.vehiclemanager.vehiclemanager.entities.Address;
 import com.vehiclemanager.vehiclemanager.entities.Role;
 import com.vehiclemanager.vehiclemanager.entities.User;
 import com.vehiclemanager.vehiclemanager.repository.RoleRepository;
@@ -38,9 +39,21 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
+        var address = new Address();
+        address.setStreet(dto.createAddressDto().street());
+        address.setNumber(dto.createAddressDto().number());
+        address.setNeighborhood(dto.createAddressDto().neighborhood());
+        address.setComplement(dto.createAddressDto().complement());
+        address.setCep(dto.createAddressDto().cep());
+        address.setCity(dto.createAddressDto().city());
+        address.setState(dto.createAddressDto().state());
+
         var user = new User();
         user.setEmail(dto.email());
         user.setPassword(passwordEncoder.encode(dto.password()));
+        user.setName(dto.email());
+        user.setCnpj(dto.cnpj());
+        user.setAddress(address);
         user.setRoles(Set.of(basicRole));
 
         userRepository.save(user);
@@ -74,6 +87,34 @@ public class UserService {
         if (dto.password() != null) {
             user.setPassword(passwordEncoder.encode(dto.password()));
         }
+        var addressDto = dto.createAddressDto();
+        var address = new Address();
+        if (addressDto != null) {
+            if (addressDto.street() != null) {
+                address.setStreet(addressDto.street());
+            }
+            if (addressDto.number() != null) {
+                address.setNumber(addressDto.number());
+            }
+            if (addressDto.neighborhood() != null) {
+                address.setNeighborhood(addressDto.neighborhood());
+            }
+            if (addressDto.complement() != null) {
+                address.setComplement(addressDto.complement());
+            }
+            if (addressDto.cep() != null) {
+                address.setCep(addressDto.cep());
+            }
+            if (addressDto.city() != null) {
+                address.setCity(addressDto.city());
+            }
+            if (addressDto.state() != null) {
+                address.setState(addressDto.state());
+            }
+            user.setAddress(address);
+        }
+
+
         userRepository.save(user);
     }
 }
