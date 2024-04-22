@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.Optional;
 import java.util.Set;
 
 @Configuration
@@ -32,10 +33,24 @@ public class AdminUserConfig implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
 
-        var roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());
-
         var userAdmin = userRepository.findByEmail("admin@admin.com");
+        var roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());
+        if (roleAdmin == null) {
+            Role adminRole = new Role();
+            adminRole.setName(Role.Values.ADMIN.name());
+            adminRole.setRoleId(Role.Values.ADMIN.getRoleId());
+            roleAdmin = roleRepository.save(adminRole);
+        }
 
+        var roleBasic = roleRepository.findByName(Role.Values.BASIC.name());
+        if (roleBasic == null) {
+            Role basicRole = new Role();
+            basicRole.setName(Role.Values.BASIC.name());
+            basicRole.setRoleId(Role.Values.BASIC.getRoleId());
+            roleBasic = roleRepository.save(basicRole);
+        }
+
+        final var roleAdm = roleAdmin;
         userAdmin.ifPresentOrElse(
                 user -> {
                     System.out.println("admin ja existe");
@@ -50,8 +65,9 @@ public class AdminUserConfig implements CommandLineRunner {
                     address.setStreet("Rua X");
                     var user = new User();
                     user.setEmail("admin@admin.com");
+                    user.setName("admin");
                     user.setPassword(passwordEncoder.encode("123"));
-                    user.setRoles(Set.of(roleAdmin));
+                    user.setRoles(Set.of(roleAdm));
                     user.setCnpj("73.826.683/0001-04");
                     user.setAddress(address);
                     userRepository.save(user);
