@@ -4,6 +4,7 @@ import com.vehiclemanager.vehiclemanager.dto.CreateVehicleDto;
 import com.vehiclemanager.vehiclemanager.dto.UpdateVehicleDto;
 import com.vehiclemanager.vehiclemanager.dto.VehicleUserDto;
 import com.vehiclemanager.vehiclemanager.services.VehicleService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class VehicleController {
     }
 
     @GetMapping("/vehicles")
+    @Operation(summary = "List Vehicles", description = "List all vehicles", tags = "Vehicles Endpoints")
     public ResponseEntity<VehicleUserDto> listVehicles(@RequestParam(value = "page", defaultValue = "0") int page,
                                                        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         VehicleUserDto vehicles = vehicleService.listVehicles(page, pageSize);
@@ -27,6 +29,7 @@ public class VehicleController {
     }
 
     @PostMapping("/vehicles")
+    @Operation(summary = "Add Vehicle", description = "Add a new vehicles", tags = "Vehicles Endpoints")
     public ResponseEntity<Void> addVehicle(@RequestBody CreateVehicleDto dto,
                                            JwtAuthenticationToken token) {
         UUID userId = UUID.fromString(token.getName());
@@ -35,6 +38,7 @@ public class VehicleController {
     }
 
     @DeleteMapping("/vehicles/{id}")
+    @Operation(summary = "Delete Vehicle", description = "Delete an existent vehicle by id", tags = "Vehicle Endpoints")
     public ResponseEntity<Void> deleteVehicle(@PathVariable("id") Long vehicleId,
                                               JwtAuthenticationToken token) {
         UUID userId = UUID.fromString(token.getName());
@@ -43,6 +47,7 @@ public class VehicleController {
     }
 
     @PutMapping("/vehicles/{vehicleId}")
+    @Operation(summary = "Edit Vehicle", description = "Edit an existent vehicle", tags = "Vehicle Endpoints")
     public ResponseEntity<Void> updateVehicle(@PathVariable("vehicleId") Long vehicleId,
                                               @RequestBody UpdateVehicleDto dto,
                                               JwtAuthenticationToken token) {

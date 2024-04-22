@@ -1,6 +1,7 @@
 ## Vehicle Manager
 
-Vehicle Manager is a Spring Boot application designed to manage vehicles and users in a vehicle management system. It provides APIs for creating, updating, and deleting vehicles, as well as user authentication and authorization.
+Vehicle Manager is a Spring Boot application designed to manage vehicles and users in a vehicle management system. It
+provides APIs for creating, updating, and deleting vehicles, as well as user authentication and authorization.
 
 ### Features
 
@@ -39,10 +40,12 @@ The application will start on `http://localhost:8080`.
 
 ### API Documentation
 
-After running the application, you can access the Swagger UI to explore the API endpoints and documentation. Open your web browser and go to:
+After running the application, you can access the Swagger UI to explore the API endpoints and documentation. Open your
+web browser and go to:
 
 http://localhost:8080/swagger-ui/
 
 ### Configuration
 
-You can configure the database connection, JWT secret key, and other application properties in the `application.properties` file located in the `src/main/resources` directory.
+You can configure the database connection, JWT secret key, and other application properties in
+the `application.properties` file located in the `src/main/resources` directory.

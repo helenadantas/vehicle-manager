@@ -1,11 +1,9 @@
 package com.vehiclemanager.vehiclemanager.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-
 import com.vehiclemanager.vehiclemanager.dto.LoginRequest;
 import com.vehiclemanager.vehiclemanager.dto.LoginResponse;
 import com.vehiclemanager.vehiclemanager.services.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@Api(tags = "Token Management", description = "Endpoints for token management")
 public class TokenController {
 
     private final TokenService tokenService;
@@ -23,7 +20,7 @@ public class TokenController {
         this.tokenService = tokenService;
     }
 
-    @ApiOperation(value = "Generate JWT token", notes = "Generates a JWT token based on the provided login credentials")
+    @Operation(summary = "Generate JWT token", description = "Generates a JWT token based on the provided login credentials", tags = "Token Endpoint")
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         try {
