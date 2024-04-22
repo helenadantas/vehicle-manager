@@ -6,6 +6,7 @@ import com.vehiclemanager.vehiclemanager.entities.Role;
 import com.vehiclemanager.vehiclemanager.entities.User;
 import com.vehiclemanager.vehiclemanager.repository.RoleRepository;
 import com.vehiclemanager.vehiclemanager.repository.UserRepository;
+import com.vehiclemanager.vehiclemanager.repository.VehicleRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,13 +22,16 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final VehicleRepository vehicleRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
+                       VehicleRepository vehicleRepository,
                        RoleRepository roleRepository,
                        BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.vehicleRepository = vehicleRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -69,7 +74,21 @@ public class UserService {
     }
 
     public void deleteUser(UUID userId) {
-        userRepository.deleteById(userId);
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            user.getRoles().clear();
+
+            user.setAddress(null);
+
+            vehicleRepository.deleteByUser(user);
+
+            userRepository.delete(user);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
     public void updateUser(UUID userId, CreateUserDto dto) {

@@ -3,6 +3,8 @@ package com.vehiclemanager.vehiclemanager.controller;
 import com.vehiclemanager.vehiclemanager.dto.CreateVehicleDto;
 import com.vehiclemanager.vehiclemanager.dto.UpdateVehicleDto;
 import com.vehiclemanager.vehiclemanager.dto.VehicleUserDto;
+import com.vehiclemanager.vehiclemanager.entities.User;
+import com.vehiclemanager.vehiclemanager.entities.Vehicle;
 import com.vehiclemanager.vehiclemanager.services.VehicleService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,20 @@ public class VehicleController {
         this.vehicleService = vehicleService;
     }
 
+    @GetMapping("/vehicles/{vehicleId}")
+    @Operation(summary = "Get Vehicle", description = "Get Vehicle by Id", tags = "Vehicles Endpoints")
+    public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long vehicleId) {
+        Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
+        return ResponseEntity.ok(vehicle);
+    }
+    @GetMapping("/vehicles/user/{userId}")
+    @Operation(summary = "Get Vehicles by userId", description = "Get Vehicles by userId", tags = "Vehicles Endpoints")
+    public ResponseEntity<VehicleUserDto> getVehicleByUserId(@PathVariable UUID userId,
+                                                      @RequestParam(value = "page", defaultValue = "0") int page,
+                                                      @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        VehicleUserDto vehicles = vehicleService.getVehicleByUserId(userId, page, pageSize);
+        return ResponseEntity.ok(vehicles);
+    }
     @GetMapping("/vehicles")
     @Operation(summary = "List Vehicles", description = "List all vehicles", tags = "Vehicles Endpoints")
     public ResponseEntity<VehicleUserDto> listVehicles(@RequestParam(value = "page", defaultValue = "0") int page,

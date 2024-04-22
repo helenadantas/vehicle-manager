@@ -4,12 +4,17 @@ import com.vehiclemanager.vehiclemanager.dto.CreateVehicleDto;
 import com.vehiclemanager.vehiclemanager.dto.UpdateVehicleDto;
 import com.vehiclemanager.vehiclemanager.dto.VehicleItemDto;
 import com.vehiclemanager.vehiclemanager.dto.VehicleUserDto;
+import com.vehiclemanager.vehiclemanager.entities.User;
 import com.vehiclemanager.vehiclemanager.entities.Vehicle;
 import com.vehiclemanager.vehiclemanager.repository.UserRepository;
 import com.vehiclemanager.vehiclemanager.repository.VehicleRepository;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -22,6 +27,34 @@ public class VehicleService {
     public VehicleService(VehicleRepository vehicleRepository, UserRepository userRepository) {
         this.vehicleRepository = vehicleRepository;
         this.userRepository = userRepository;
+    }
+
+    public Vehicle getVehicleById(Long vehicleId) {
+        return vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    public VehicleUserDto getVehicleByUserId(UUID userId, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        var vehiclesPage = vehicleRepository.findByUserUserId(userId, pageable);
+        var vehicleItems = vehiclesPage.getContent().stream()
+                .map(vehicle ->
+                        new VehicleItemDto(
+                                vehicle.getVehicleId(),
+                                vehicle.getVehicleModel(),
+                                vehicle.getSerialTracker(),
+                                vehicle.getLicensePlate(),
+                                vehicle.getUser().getEmail())
+                )
+                .collect(Collectors.toList());
+
+        return new VehicleUserDto(
+                vehicleItems,
+                page,
+                pageSize,
+                vehiclesPage.getTotalPages(),
+                vehiclesPage.getTotalElements()
+        );
     }
 
     public VehicleUserDto listVehicles(int page, int pageSize) {
