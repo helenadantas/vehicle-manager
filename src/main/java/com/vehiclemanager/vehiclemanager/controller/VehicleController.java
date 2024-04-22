@@ -2,9 +2,8 @@ package com.vehiclemanager.vehiclemanager.controller;
 
 import com.vehiclemanager.vehiclemanager.dto.CreateVehicleDto;
 import com.vehiclemanager.vehiclemanager.dto.UpdateVehicleDto;
+import com.vehiclemanager.vehiclemanager.dto.VehicleItemDto;
 import com.vehiclemanager.vehiclemanager.dto.VehicleUserDto;
-import com.vehiclemanager.vehiclemanager.entities.User;
-import com.vehiclemanager.vehiclemanager.entities.Vehicle;
 import com.vehiclemanager.vehiclemanager.services.VehicleService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +23,8 @@ public class VehicleController {
 
     @GetMapping("/vehicles/{vehicleId}")
     @Operation(summary = "Get Vehicle", description = "Get Vehicle by Id", tags = "Vehicles Endpoints")
-    public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long vehicleId) {
-        Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
+    public ResponseEntity<VehicleItemDto> getVehicleById(@PathVariable Long vehicleId) {
+        VehicleItemDto vehicle = vehicleService.getVehicleById(vehicleId);
         return ResponseEntity.ok(vehicle);
     }
     @GetMapping("/vehicles/user/{userId}")

@@ -1,12 +1,14 @@
 package com.vehiclemanager.vehiclemanager.services;
 
-import com.vehiclemanager.vehiclemanager.dto.CreateUserDto;
+import com.vehiclemanager.vehiclemanager.dto.*;
 import com.vehiclemanager.vehiclemanager.entities.Address;
 import com.vehiclemanager.vehiclemanager.entities.Role;
 import com.vehiclemanager.vehiclemanager.entities.User;
 import com.vehiclemanager.vehiclemanager.repository.RoleRepository;
 import com.vehiclemanager.vehiclemanager.repository.UserRepository;
 import com.vehiclemanager.vehiclemanager.repository.VehicleRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -64,13 +67,36 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public UserListDto getAllUsers(int page, int pageSize) {
+        var userPage = userRepository.findAll(
+                PageRequest.of(page, pageSize, Sort.Direction.DESC, "name"));
+        var userList = userPage.getContent().stream()
+                .map(user ->
+                        new UserDto(
+                                user.getUserId(),
+                                user.getEmail(),
+                                user.getName(),
+                                user.getCnpj(),
+                                user.getAddress())
+                )
+                .collect(Collectors.toList());
+        return new UserListDto(
+                userList,
+                page,
+                pageSize,
+                userPage.getTotalPages(),
+                userPage.getTotalElements()
+        );
     }
 
-    public User getUserById(UUID userId) {
-        return userRepository.findById(userId)
+    public UserDto getUserById(UUID userId) {
+        var user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return new UserDto(user.getUserId(),
+                user.getEmail(),
+                user.getName(),
+                user.getCnpj(),
+                user.getAddress());
     }
 
     public void deleteUser(UUID userId) {

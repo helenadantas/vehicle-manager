@@ -1,13 +1,13 @@
 package com.vehiclemanager.vehiclemanager.controller;
 
 import com.vehiclemanager.vehiclemanager.dto.CreateUserDto;
-import com.vehiclemanager.vehiclemanager.entities.User;
+import com.vehiclemanager.vehiclemanager.dto.UserDto;
+import com.vehiclemanager.vehiclemanager.dto.UserListDto;
 import com.vehiclemanager.vehiclemanager.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -28,15 +28,16 @@ public class UserController {
 
     @GetMapping("/users")
     @Operation(summary = "List Users", description = "List all users", tags = "Users Endpoints")
-    public ResponseEntity<List<User>> listUsers() {
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<UserListDto> listUsers(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                 @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        UserListDto users = userService.getAllUsers(page, pageSize);
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/users/{userId}")
     @Operation(summary = "Get User", description = "Get User by Id", tags = "Users Endpoints")
-    public ResponseEntity<User> getUserById(@PathVariable UUID userId) {
-        User user = userService.getUserById(userId);
+    public ResponseEntity<UserDto> getUserById(@PathVariable UUID userId) {
+        UserDto user = userService.getUserById(userId);
         return ResponseEntity.ok(user);
     }
 

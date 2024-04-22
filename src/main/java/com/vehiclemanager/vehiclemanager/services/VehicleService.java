@@ -29,9 +29,15 @@ public class VehicleService {
         this.userRepository = userRepository;
     }
 
-    public Vehicle getVehicleById(Long vehicleId) {
-        return vehicleRepository.findById(vehicleId)
+    public VehicleItemDto getVehicleById(Long vehicleId) {
+        var vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return new VehicleItemDto(
+                vehicle.getVehicleId(),
+                vehicle.getVehicleModel(),
+                vehicle.getSerialTracker(),
+                vehicle.getLicensePlate(),
+                vehicle.getUser().getEmail());
     }
 
     public VehicleUserDto getVehicleByUserId(UUID userId, int page, int pageSize) {
